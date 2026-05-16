@@ -3,6 +3,6 @@
 /// More dartdocs go here.
 library;
 
-export 'src/fcis_core_base.dart';
+export 'src/fcis_core.dart';
 
 // TODO: Export any libraries intended for clients of this package.
