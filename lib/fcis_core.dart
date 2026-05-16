@@ -1,8 +1,9 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/// FCIS pattern
 library;
 
+export 'src/action_source.dart';
+export 'src/fcis_composer.dart';
 export 'src/fcis_core.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/shell.dart';
+export 'src/state_holder.dart';
+export 'src/updater.dart';
