@@ -60,8 +60,10 @@ class FcisLoop<S, A, E> implements ActionSink<A>, ActionSinkAsync<A> {
 
     _stateHolder.update(nextState);
 
-    for (final effect in effects) {
-      await _runEffect(effect);
+    if (effects != null) {
+      for (int i = 0; i < effects.length; i++) {
+        await _runEffect(effects[i]);
+      }
     }
   }
 

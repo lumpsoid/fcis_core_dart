@@ -15,5 +15,5 @@
 abstract class Updater<S, A, E> {
   const Updater();
 
-  (S, List<E>) update(S state, A action);
+  (S, List<E>?) update(S state, A action);
 }
