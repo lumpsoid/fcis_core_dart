@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:fcis_core/src/action_source.dart';
-import 'package:fcis_core/src/shell.dart';
+import 'package:fcis_core/src/effect_runner.dart';
+import 'package:fcis_core/src/listener_list.dart';
 import 'package:fcis_core/src/state_holder.dart';
 
 import 'updater.dart';
@@ -26,16 +27,16 @@ class FcisLoop<S, A, E> implements ActionSink<A>, ActionSinkAsync<A> {
   FcisLoop({
     required StateHolder<S> stateHolder,
     required Updater<S, A, E> updater,
-    required Shell<E, A> shell,
+    required EffectRunner<E, A> effectRunner,
     this.onEffectHandlerError,
-  }) : _stateHolder = stateHolder,
-       _updater = updater,
-       _shell = shell;
+  }) : _effectRunner = effectRunner,
+       _stateHolder = stateHolder,
+       _updater = updater;
 
   /// The current state snapshot.
   final StateHolder<S> _stateHolder;
   final Updater<S, A, E> _updater;
-  final Shell<E, A> _shell;
+  final EffectRunner<E, A> _effectRunner;
 
   /// Called when [EffectHandler.run] throws.
   ///
@@ -60,23 +61,7 @@ class FcisLoop<S, A, E> implements ActionSink<A>, ActionSinkAsync<A> {
 
     _stateHolder.update(nextState);
 
-    if (effects != null) {
-      for (int i = 0; i < effects.length; i++) {
-        await _runEffect(effects[i]);
-      }
-    }
-  }
-
-  Future<void> _runEffect(E effect) async {
-    try {
-      await _shell.run(effect, dispatch: dispatch);
-    } catch (e, st) {
-      if (onEffectHandlerError != null) {
-        onEffectHandlerError!(effect, e, st);
-      } else {
-        rethrow;
-      }
-    }
+    _effectRunner.run(effects, dispatch);
   }
 }
 
@@ -85,47 +70,22 @@ class ObservableFcisLoop<S, A, E> extends FcisLoop<S, A, E>
   ObservableFcisLoop({
     required super.stateHolder,
     required super.updater,
-    required super.shell,
+    required super.effectRunner,
     super.onEffectHandlerError,
-  });
+    ListenerList<A>? listenerList,
+  }) : _listeners = listenerList ?? ListenerList<A>();
 
-  final List<void Function(A)?> _listeners = [];
-  int _notifyDepth = 0;
-  bool _hasTombstones = false;
+  final ListenerList<A> _listeners;
 
   @override
   void addListener(void Function(A) listener) => _listeners.add(listener);
 
   @override
-  void removeListener(void Function(A) listener) {
-    final idx = _listeners.indexOf(listener);
-    if (idx == -1) return;
-    if (_notifyDepth > 0) {
-      _listeners[idx] = null;
-      _hasTombstones = true;
-    } else {
-      _listeners.removeAt(idx);
-    }
-  }
-
-  void _notify(A action) {
-    _notifyDepth++;
-    try {
-      for (var i = 0; i < _listeners.length; i++) {
-        _listeners[i]?.call(action);
-      }
-    } finally {
-      _notifyDepth--;
-      if (_notifyDepth == 0 && _hasTombstones) {
-        _listeners.removeWhere((cb) => cb == null);
-        _hasTombstones = false;
-      }
-    }
-  }
+  void removeListener(void Function(A) listener) => _listeners.remove(listener);
 
   @override
   Future<void> dispatchAsync(A action) async {
     await super.dispatchAsync(action);
-    _notify(action);
+    _listeners.notify(action);
   }
 }
