@@ -40,14 +40,14 @@ class FcisComposer<F, T> {
   /// [map] is called for every action emitted by [source].
   /// Return a [T] action to forward it, or null to ignore it.
   FcisComposer({
-    required ActionSource<F> source,
+    required ActionListener<F> source,
     required ActionSink<T> sink,
     required T? Function(F) map,
   }) : _source = source,
        _sink = sink,
        _map = map;
 
-  final ActionSource<F> _source;
+  final ActionListener<F> _source;
   final ActionSink<T> _sink;
   final T? Function(F) _map;
 

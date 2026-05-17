@@ -81,7 +81,7 @@ class FcisLoop<S, A, E> implements ActionSink<A>, ActionSinkAsync<A> {
 }
 
 class ObservableFcisLoop<S, A, E> extends FcisLoop<S, A, E>
-    implements ActionSource<A> {
+    implements ActionListener<A> {
   ObservableFcisLoop({
     required super.stateHolder,
     required super.updater,

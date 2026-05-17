@@ -7,7 +7,7 @@ abstract class ActionSinkAsync<A> {
 }
 
 // for listening to another feature's actions
-abstract class ActionSource<A> {
+abstract class ActionListener<A> {
   void addListener(void Function(A) listener);
   void removeListener(void Function(A) listener);
 }
