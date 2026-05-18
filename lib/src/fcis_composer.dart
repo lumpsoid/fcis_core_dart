@@ -1,4 +1,5 @@
 import 'package:fcis_core/src/action_source.dart';
+import 'package:fcis_core/src/effect_runner.dart';
 
 /// A directional action bridge between two features.
 ///
@@ -40,14 +41,14 @@ class FcisComposer<F, T> {
   /// [map] is called for every action emitted by [source].
   /// Return a [T] action to forward it, or null to ignore it.
   FcisComposer({
-    required ActionListener<F> source,
+    required EffectSource<F> source,
     required ActionSink<T> sink,
     required T? Function(F) map,
   }) : _source = source,
        _sink = sink,
        _map = map;
 
-  final ActionListener<F> _source;
+  final EffectSource<F> _source;
   final ActionSink<T> _sink;
   final T? Function(F) _map;
 

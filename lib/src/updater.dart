@@ -2,7 +2,7 @@
 
 /// Pure reducer.
 ///
-/// Maps (state, action) → (nextState, effects).
+/// Maps (state, action) -> (nextState, effects).
 /// Must be a pure function — no I/O, no mutation, no side effects.
 ///
 /// Returning an empty list and returning null are equivalent;

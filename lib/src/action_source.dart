@@ -5,9 +5,3 @@ abstract class ActionSink<A> {
 abstract class ActionSinkAsync<A> {
   Future<void> dispatchAsync(A action);
 }
-
-// for listening to another feature's actions
-abstract class ActionListener<A> {
-  void addListener(void Function(A) listener);
-  void removeListener(void Function(A) listener);
-}

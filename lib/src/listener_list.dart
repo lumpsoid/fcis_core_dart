@@ -14,10 +14,7 @@ class ListenerList<T> {
   // backing object. Fixed-length (not const) keeps the runtime type identical
   // to every other backing array, letting the compiler monomorphise field
   // accesses for better performance.
-  static final List<Object?> _emptyListeners = List<Object?>.filled(0, null);
-
-  List<void Function(T)?> _listeners =
-      (_emptyListeners as List<void Function(T)?>);
+  List<void Function(T)?> _listeners = const [];
 
   /// Number of live (non-null) listeners currently registered.
   int _count = 0;
