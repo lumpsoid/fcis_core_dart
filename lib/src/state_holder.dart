@@ -2,7 +2,7 @@ abstract class StateSource<S> {
   S get state;
 }
 
-abstract class StateHolder<S> implements StateSource {
+abstract class StateHolder<S> implements StateSource<S> {
   @override
   S get state;
   void update(S next);
